@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Dettaglio Evento</title>
 </head>
 <body>
-$END$
+
+<ul>
+    <li><strong>Anno:</strong> <span th:text="${evento.anno}">Anno</span></li>
+    <li><strong>Titolo:</strong> <span th:text="${evento.titolo}">Titolo</span></li>
+    <li><strong>Luogo:</strong> <span th:text="${evento.luogo}">Luogo</span></li>
+    <li><strong>Civiltà:</strong> <span th:text="${evento.civilta}">Civiltà</span></li>
+    <li><strong>Categoria:</strong> <span th:text="${evento.categoria}">Categoria</span></li>
+    <li><strong>Descrizione:</strong> <span th:text="${evento.descrizione}">Descrizione</span></li>
+</ul>
 </body>
 </html>

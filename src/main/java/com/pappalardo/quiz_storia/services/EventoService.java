@@ -75,12 +75,16 @@ public class EventoService {
 
     public List<EventoDto> trovaTutti() {
         return StreamSupport.stream(eventoRepository.findAll().spliterator(), false)
-                .map(EventoDto::fromEntity)
+                .map(EventoDto::fromEntityWithId)
                 .toList();
     }
 
-    public Evento trovaUno(Long id) {
-        return eventoRepository.findById(id).orElse(null);
+    public EventoDto trovaUno(Long id) throws IOException {
+        if (id == null) {
+            throw new IllegalArgumentException("Id non valido");
+        }
+        Evento evento = eventoRepository.findById(id).orElseThrow();
+        return EventoDto.fromEntity(evento);
     }
 
     public void elimina(Long id) {

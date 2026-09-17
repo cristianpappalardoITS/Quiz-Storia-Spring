@@ -26,6 +26,9 @@
                 <td th:text="${evento.civilta}">Civiltà</td>
                 <td th:text="${evento.categoria}">Categoria</td>
                 <td th:text="${evento.descrizione}">Descrizione</td>
+                <td><a th:href="@{/eventi/dettaglio/{id}(id=${evento.id})}">Dettaglio</a></td>
+                <td><a th:href="@{/eventi/modifica/{id}(id=${evento.id})}">Modifica</a></td>
+                <td><a th:href="@{/eventi/elimina/{id}(id=${evento.id})}">Elimina</a></td>
             </tr>
         </tbody>
     </table>
