@@ -10,57 +10,73 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 
 @Service
 public class EventoService {
+
     private final EventoRepository eventoRepository;
     private final ObjectMapper objectMapper;
 
-    public EventoService(EventoRepository eventoRepository, ObjectMapper objectMapper) {
+    public EventoService(
+            EventoRepository eventoRepository,
+            ObjectMapper objectMapper
+    ) {
         this.eventoRepository = eventoRepository;
         this.objectMapper = objectMapper;
-    }
-
-    public void salva(Evento evento) {
-        eventoRepository.save(evento);
     }
 
     public void salvaTutti() throws IOException {
         Resource[] risorse = new PathMatchingResourcePatternResolver()
                 .getResources("classpath:dati/*.json");
 
-        List<Evento> eventi = new ArrayList<>();
-        for (Resource risorsa : risorse) {
-            JsonNode root = objectMapper.readTree(risorsa.getInputStream());
-            for (JsonNode nodo : root.get("eventi")) {
-                eventi.add(new Evento(
-                        nodo.get("anno").asInt(),
-                        nodo.get("titolo").asText(),
-                        nodo.get("luogo").asText(),
-                        nodo.get("civilta").asText(),
-                        nodo.get("categoria").asText(),
-                        nodo.get("descrizione").asText()
-                ));
-            }
+        List<Evento> eventi = Arrays.stream(risorse)
+                .flatMap(risorsa -> {
+                    try {
+                        return parseEventi(risorsa).stream();
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                })
+                .toList();
+
+        if (!eventi.isEmpty()) {
+            eventoRepository.saveAll(eventi);
         }
-        eventoRepository.saveAll(eventi);
     }
 
+    private List<Evento> parseEventi(Resource risorsa) throws IOException {
+        try (InputStream inputStream = risorsa.getInputStream()) {
+            JsonNode root = objectMapper.readTree(inputStream);
+
+            List<Evento> eventi = new ArrayList<>();
+
+            for (JsonNode nodo : root.path("eventi")) {
+                eventi.add(new Evento(
+                        nodo.path("anno").asInt(),
+                        nodo.path("titolo").asText(),
+                        nodo.path("luogo").asText(),
+                        nodo.path("civilta").asText(),
+                        nodo.path("categoria").asText(),
+                        nodo.path("descrizione").asText()
+                ));
+            }
+
+            return eventi;
+        }
+    }
+
+
     public List<EventoDto> trovaTutti() {
-        List<EventoDto> eventiDto = new ArrayList<>();
-        Iterable<Evento> eventi = null;
-        try {
-            eventi = eventoRepository.findAll();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        for (Evento evento : eventi){
-            eventiDto.add(EventoDto.fromEntity(evento));
-        }
-        return eventiDto;
+        return StreamSupport.stream(eventoRepository.findAll().spliterator(), false)
+                .map(EventoDto::fromEntity)
+                .toList();
     }
 
     public Evento trovaUno(Long id) {
