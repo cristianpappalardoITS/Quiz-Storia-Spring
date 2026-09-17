@@ -3,23 +3,16 @@ package com.pappalardo.quiz_storia.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "evento")
 public class Evento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    @Column(name = "anno")
     public int anno;
-    @Column(name = "titolo")
     public String titolo;
-    @Column(name = "luogo")
     public String luogo;
-    @Column(name = "civilta")
     public String civilta;
-    @Column(name = "categoria")
     public String categoria;
-    @Column(name = "descrizione")
     public String descrizione;
 
     public Evento() {
