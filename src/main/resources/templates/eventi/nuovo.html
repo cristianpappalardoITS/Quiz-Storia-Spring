@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuovo Evento</title>
+</head>
+<body>
+<form th:action="@{/eventi/nuovo}" method="post" th:object="${evento}">
+    <input type="text" name="anno">
+    <input type="text" name="titolo">
+    <input type="text" name="luogo">
+    <input type="text" name="civilta">
+    <input type="text" name="categoria">
+    <input type="text" name="descrizione">
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

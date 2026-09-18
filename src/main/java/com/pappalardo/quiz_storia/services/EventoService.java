@@ -73,7 +73,6 @@ public class EventoService {
         }
     }
 
-
     public List<EventoDto> trovaTutti() {
         return StreamSupport.stream(eventoRepository.findAll().spliterator(), false)
                 .map(EventoDto::fromEntityWithId)
@@ -100,4 +99,8 @@ public class EventoService {
         dto.updateEntity(evento);
     }
 
+    public void nuovo(EventoDto dto) {
+        eventoRepository.save(dto.toEntity(dto));
+    }
+                
 }

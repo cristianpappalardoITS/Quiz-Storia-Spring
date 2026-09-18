@@ -60,8 +60,14 @@ public class EventoController {
         return "redirect:/eventi/lista";
     }
 
-    @RequestMapping("/eventi/nuovo")
-    public String nuovoEvento() {
+    @GetMapping("/eventi/nuovo")
+    public String mostraNuovoEvento() {
         return "eventi/nuovo";
+    }
+
+    @PostMapping("/eventi/nuovo")
+    public String salvaNuovoEvento(@ModelAttribute EventoDto evento) {
+        eventoService.nuovo(evento);
+        return "redirect:/eventi/lista";
     }
 }

@@ -2,7 +2,7 @@ package com.pappalardo.quiz_storia.dto;
 
 import com.pappalardo.quiz_storia.entities.Evento;
 
-public record EventoDto(Long id,String epoca, int anno, String titolo, String luogo, String civilta, String categoria,
+public record EventoDto(Long id, String epoca, int anno, String titolo, String luogo, String civilta, String categoria,
                         String descrizione) {
 
     public static EventoDto fromEntity(Evento evento) {
@@ -28,6 +28,11 @@ public record EventoDto(Long id,String epoca, int anno, String titolo, String lu
                 evento.getCategoria(),
                 evento.getDescrizione());
     }
+
+    public Evento toEntity(EventoDto dto) {
+        return new Evento(dto.anno, dto.titolo, dto.luogo, dto.civilta, dto.categoria, dto.descrizione);
+    }
+
     public void updateEntity(Evento evento) {
         evento.setAnno(anno);
         evento.setTitolo(titolo);
