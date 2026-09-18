@@ -6,6 +6,7 @@ import com.pappalardo.quiz_storia.repositories.EventoRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -84,11 +85,19 @@ public class EventoService {
             throw new IllegalArgumentException("Id non valido");
         }
         Evento evento = eventoRepository.findById(id).orElseThrow();
-        return EventoDto.fromEntity(evento);
+        return EventoDto.fromEntityWithId(evento);
     }
 
     public void elimina(Long id) {
         eventoRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void aggiorna(Long id, EventoDto dto) {
+        Evento evento = eventoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Evento non trovato"));
+
+        dto.updateEntity(evento);
     }
 
 }

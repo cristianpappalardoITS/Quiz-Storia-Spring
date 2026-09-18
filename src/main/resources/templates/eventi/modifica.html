@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifica Evento</title>
+</head>
+<body>
+<form th:action="@{/eventi/modifica/{id}(id=${evento.id})}"
+      method="post"
+      th:object="${evento}">
+
+    <input type="hidden" th:field="*{id}">
+                
+    <input type="text"
+           th:field="*{anno}">
+
+    <input type="text"
+           th:field="*{titolo}">
+
+    <input type="text"
+           th:field="*{luogo}">
+
+    <input type="text"
+           th:field="*{civilta}">
+
+    <input type="text"
+           th:field="*{categoria}">
+
+    <input type="text"
+           th:field="*{descrizione}">
+
+    <button type="submit">Save</button>
+</form>
+
+</body>
+</html>

@@ -28,4 +28,12 @@ public record EventoDto(Long id,String epoca, int anno, String titolo, String lu
                 evento.getCategoria(),
                 evento.getDescrizione());
     }
+    public void updateEntity(Evento evento) {
+        evento.setAnno(anno);
+        evento.setTitolo(titolo);
+        evento.setLuogo(luogo);
+        evento.setCivilta(civilta);
+        evento.setCategoria(categoria);
+        evento.setDescrizione(descrizione);
+    }
 }

@@ -4,9 +4,7 @@ import com.pappalardo.quiz_storia.dto.EventoDto;
 import com.pappalardo.quiz_storia.services.EventoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,18 +41,27 @@ public class EventoController {
     }
 
 
-    @RequestMapping("/eventi/nuovo")
-    public String nuovoEvento() {
-        return "eventi/nuovo";
-    }
-
-    @RequestMapping("/eventi/modifica")
-    public String modificaEvento() {
+    @GetMapping("/eventi/modifica/{id}")
+    public String modificaEvento(@PathVariable Long id, Model model) throws IOException {
+        EventoDto evento = eventoService.trovaUno(id);
+        model.addAttribute("evento", evento);
         return "eventi/modifica";
     }
 
-    @RequestMapping("eventi/elimina")
-    public String eliminaEvento() {
-        return "eventi/elimina";
+    @PostMapping("/eventi/modifica/{id}")
+    public String aggiornaEvento(@PathVariable Long id, @ModelAttribute EventoDto evento) throws IOException {
+        eventoService.aggiorna(id, evento);
+        return "redirect:/eventi/dettaglio/" + id;
+    }
+
+    @PostMapping("eventi/elimina/{id}")
+    public String eliminaEvento(@PathVariable Long id) throws IOException {
+        eventoService.elimina(id);
+        return "redirect:/eventi/lista";
+    }
+
+    @RequestMapping("/eventi/nuovo")
+    public String nuovoEvento() {
+        return "eventi/nuovo";
     }
 }

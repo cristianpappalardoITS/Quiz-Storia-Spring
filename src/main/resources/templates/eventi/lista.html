@@ -5,32 +5,43 @@
     <title>Lista eventi</title>
 </head>
 <body>
-    <h1>Lista degli eventi</h1>
+<h1>Lista degli eventi</h1>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Anno</th>
-                <th>Titolo</th>
-                <th>Luogo</th>
-                <th>Civiltà</th>
-                <th>Categoria</th>
-                <th>Descrizione</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="evento : ${eventi}">
-                <td th:text="${evento.anno}">Anno</td>
-                <td th:text="${evento.titolo}">Titolo</td>
-                <td th:text="${evento.luogo}">Luogo</td>
-                <td th:text="${evento.civilta}">Civiltà</td>
-                <td th:text="${evento.categoria}">Categoria</td>
-                <td th:text="${evento.descrizione}">Descrizione</td>
-                <td><a th:href="@{/eventi/dettaglio/{id}(id=${evento.id})}">Dettaglio</a></td>
-                <td><a th:href="@{/eventi/modifica/{id}(id=${evento.id})}">Modifica</a></td>
-                <td><a th:href="@{/eventi/elimina/{id}(id=${evento.id})}">Elimina</a></td>
-            </tr>
-        </tbody>
-    </table>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Anno</th>
+        <th>Titolo</th>
+        <th>Luogo</th>
+        <th>Civiltà</th>
+        <th>Categoria</th>
+        <th>Descrizione</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="evento : ${eventi}">
+        <td th:text="${evento.anno}">Anno</td>
+        <td th:text="${evento.titolo}">Titolo</td>
+        <td th:text="${evento.luogo}">Luogo</td>
+        <td th:text="${evento.civilta}">Civiltà</td>
+        <td th:text="${evento.categoria}">Categoria</td>
+        <td th:text="${evento.descrizione}">Descrizione</td>
+        <td><a th:href="@{/eventi/dettaglio/{id}(id=${evento.id})}">Dettaglio</a></td>
+        <td><a th:href="@{/eventi/modifica/{id}(id=${evento.id})}">Modifica</a></td>
+        <td>
+            <form th:action="@{/eventi/elimina/{id}(id=${evento.id})}"
+                  method="post">
+
+                <button type="submit"
+                        onclick="return confirm('Sei sicuro di voler eliminare questo evento?')">
+                    Elimina
+                </button>
+
+            </form>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
