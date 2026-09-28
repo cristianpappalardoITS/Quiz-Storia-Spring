@@ -1,6 +1,6 @@
 package com.pappalardo.quiz_storia.controllers;
 
-import com.pappalardo.quiz_storia.dto.EventoDto;
+import com.pappalardo.quiz_storia.dto.EventoDTO;
 import com.pappalardo.quiz_storia.services.EventoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +27,7 @@ public class EventoController {
             }
         }
 
-        List<EventoDto> eventi = eventoService.trovaTutti();
+        List<EventoDTO> eventi = eventoService.trovaTutti();
         model.addAttribute("eventi", eventi);
 
         return "eventi/lista";
@@ -35,7 +35,7 @@ public class EventoController {
 
     @GetMapping("/eventi/dettaglio/{id}")
     public String dettaglioEvento(@PathVariable Long id, Model model) throws IOException {
-        EventoDto evento = eventoService.trovaUno(id);
+        EventoDTO evento = eventoService.trovaUno(id);
         model.addAttribute("evento", evento);
         return "eventi/dettaglio";
     }
@@ -43,13 +43,13 @@ public class EventoController {
 
     @GetMapping("/eventi/modifica/{id}")
     public String modificaEvento(@PathVariable Long id, Model model) throws IOException {
-        EventoDto evento = eventoService.trovaUno(id);
+        EventoDTO evento = eventoService.trovaUno(id);
         model.addAttribute("evento", evento);
         return "eventi/modifica";
     }
 
     @PostMapping("/eventi/modifica/{id}")
-    public String aggiornaEvento(@PathVariable Long id, @ModelAttribute EventoDto evento) throws IOException {
+    public String aggiornaEvento(@PathVariable Long id, @ModelAttribute EventoDTO evento) throws IOException {
         eventoService.aggiorna(id, evento);
         return "redirect:/eventi/dettaglio/" + id;
     }
@@ -66,7 +66,7 @@ public class EventoController {
     }
 
     @PostMapping("/eventi/nuovo")
-    public String salvaNuovoEvento(@ModelAttribute EventoDto evento) {
+    public String salvaNuovoEvento(@ModelAttribute EventoDTO evento) {
         eventoService.nuovo(evento);
         return "redirect:/eventi/lista";
     }

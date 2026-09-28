@@ -1,6 +1,6 @@
 package com.pappalardo.quiz_storia.services;
 
-import com.pappalardo.quiz_storia.dto.EventoDto;
+import com.pappalardo.quiz_storia.dto.EventoDTO;
 import com.pappalardo.quiz_storia.entities.Evento;
 import com.pappalardo.quiz_storia.repositories.EventoRepository;
 import org.springframework.core.io.Resource;
@@ -73,18 +73,18 @@ public class EventoService {
         }
     }
 
-    public List<EventoDto> trovaTutti() {
+    public List<EventoDTO> trovaTutti() {
         return StreamSupport.stream(eventoRepository.findAll().spliterator(), false)
-                .map(EventoDto::fromEntityWithId)
+                .map(EventoDTO::fromEntityWithId)
                 .toList();
     }
 
-    public EventoDto trovaUno(Long id) throws IOException {
+    public EventoDTO trovaUno(Long id) throws IOException {
         if (id == null) {
             throw new IllegalArgumentException("Id non valido");
         }
         Evento evento = eventoRepository.findById(id).orElseThrow();
-        return EventoDto.fromEntityWithId(evento);
+        return EventoDTO.fromEntityWithId(evento);
     }
 
     public void elimina(Long id) {
@@ -92,14 +92,14 @@ public class EventoService {
     }
 
     @Transactional
-    public void aggiorna(Long id, EventoDto dto) {
+    public void aggiorna(Long id, EventoDTO dto) {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento non trovato"));
 
         dto.updateEntity(evento);
     }
 
-    public void nuovo(EventoDto dto) {
+    public void nuovo(EventoDTO dto) {
         eventoRepository.save(dto.toEntity(dto));
     }
                 
