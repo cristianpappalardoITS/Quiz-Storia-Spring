@@ -1,10 +1,14 @@
 package com.pappalardo.quiz_storia.controllers;
 
 import com.pappalardo.quiz_storia.dto.EventoDTO;
+import com.pappalardo.quiz_storia.dto.EventoSearchDTO;
 import com.pappalardo.quiz_storia.services.EventoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
 import java.util.List;
@@ -70,4 +74,17 @@ public class EventoController {
         eventoService.nuovo(evento);
         return "redirect:/eventi/lista";
     }
+
+    @GetMapping("/eventi/cerca")
+    public String cercaEventi() {
+        return "eventi/cerca";
+    }
+
+    @GetMapping("/eventi/eventiFiltrati")
+    public String mostraEvento(@ModelAttribute EventoSearchDTO eventoSearchDTO, Model model) {
+        List<EventoDTO> eventi = eventoService.cerca(eventoSearchDTO);
+        model.addAttribute("eventi", eventi);
+        return "eventi/eventiFiltrati";
+    }
+
 }

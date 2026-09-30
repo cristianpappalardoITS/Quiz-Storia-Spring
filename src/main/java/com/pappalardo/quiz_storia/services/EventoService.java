@@ -1,10 +1,13 @@
 package com.pappalardo.quiz_storia.services;
 
 import com.pappalardo.quiz_storia.dto.EventoDTO;
+import com.pappalardo.quiz_storia.dto.EventoSearchDTO;
 import com.pappalardo.quiz_storia.entities.Evento;
 import com.pappalardo.quiz_storia.repositories.EventoRepository;
+import com.pappalardo.quiz_storia.repositories.EventoSpecification;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.JsonNode;
@@ -16,7 +19,6 @@ import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 
 @Service
@@ -74,7 +76,7 @@ public class EventoService {
     }
 
     public List<EventoDTO> trovaTutti() {
-        return StreamSupport.stream(eventoRepository.findAll().spliterator(), false)
+        return eventoRepository.findAll().stream()
                 .map(EventoDTO::fromEntityWithId)
                 .toList();
     }
@@ -102,5 +104,43 @@ public class EventoService {
     public void nuovo(EventoDTO dto) {
         eventoRepository.save(dto.toEntity(dto));
     }
-                
+
+    public List<EventoDTO> cerca(EventoSearchDTO dto) {
+
+        Specification<Evento> specification = Specification.unrestricted();
+
+        if (dto.anno() != null) {
+            specification = specification.and(
+                    EventoSpecification.annoEquals(dto.anno())
+            );
+        }
+
+        if (dto.titolo() != null &&
+                !dto.titolo().isBlank()) {
+
+            specification = specification.and(
+                    EventoSpecification.titoloContains(dto.titolo())
+            );
+        }
+
+        if (dto.categoria() != null &&
+                !dto.categoria().isBlank()) {
+
+            specification = specification.and(
+                    EventoSpecification.categoriaEquals(dto.categoria())
+            );
+        }
+
+        if (dto.civilta() != null &&
+                !dto.civilta().isBlank()) {
+
+            specification = specification.and(
+                    EventoSpecification.civiltaEquals(dto.civilta())
+            );
+        }
+
+        return eventoRepository.findAll(specification).stream()
+                .map(EventoDTO::fromEntityWithId)
+                .toList();
+    }
 }

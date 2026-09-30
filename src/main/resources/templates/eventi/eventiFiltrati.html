@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista eventi</title>
+</head>
+<body>
+<h1>Lista degli eventi filtrati</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Anno</th>
+        <th>Titolo</th>
+        <th>Civiltà</th>
+        <th>Categoria</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="evento : ${eventi}">
+        <td th:text="${evento.anno}">Anno</td>
+        <td th:text="${evento.titolo}">Titolo</td>
+        <td th:text="${evento.civilta}">Civiltà</td>
+        <td th:text="${evento.categoria}">Categoria</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
