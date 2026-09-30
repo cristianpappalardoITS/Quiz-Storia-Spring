@@ -21,12 +21,29 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * Servizio applicativo per la gestione degli eventi storici.
+ * Fornisce metodi per caricamento dati da file JSON, operazioni CRUD e ricerca filtrata.
+ */
 @Service
 public class EventoService {
 
+    /**
+     * Repository per l'accesso ai dati delle entità {@link Evento}.
+     */
     private final EventoRepository eventoRepository;
+
+    /**
+     * Mapper JSON per la deserializzazione dei file di dati.
+     */
     private final ObjectMapper objectMapper;
 
+    /**
+     * Costruisce una nuova istanza di {@link EventoService} con i componenti necessari.
+     *
+     * @param eventoRepository il repository per la gestione degli eventi
+     * @param objectMapper     il mapper Jackson per l'elaborazione dei file JSON
+     */
     public EventoService(
             EventoRepository eventoRepository,
             ObjectMapper objectMapper
@@ -35,6 +52,12 @@ public class EventoService {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Carica e salva nel database tutti gli eventi storici definiti nei file JSON
+     * presenti nel classpath sotto il percorso "classpath:dati/*.json".
+     *
+     * @throws IOException se si verifica un errore durante la lettura dei file JSON
+     */
     public void salvaTutti() throws IOException {
         Resource[] risorse = new PathMatchingResourcePatternResolver()
                 .getResources("classpath:dati/*.json");
@@ -54,6 +77,13 @@ public class EventoService {
         }
     }
 
+    /**
+     * Esegue il parsing di una risorsa JSON estraendo la lista di entità {@link Evento}.
+     *
+     * @param risorsa la risorsa JSON da analizzare
+     * @return la lista di entità {@link Evento} estratte
+     * @throws IOException se si verifica un errore durante la lettura dello stream
+     */
     private List<Evento> parseEventi(Resource risorsa) throws IOException {
         try (InputStream inputStream = risorsa.getInputStream()) {
             JsonNode root = objectMapper.readTree(inputStream);
@@ -75,12 +105,26 @@ public class EventoService {
         }
     }
 
+    /**
+     * Recupera tutti gli eventi presenti nel database convertendoli in {@link EventoDTO}.
+     *
+     * @return la lista di tutti gli eventi storici
+     */
     public List<EventoDTO> trovaTutti() {
         return eventoRepository.findAll().stream()
                 .map(EventoDTO::fromEntityWithId)
                 .toList();
     }
 
+    /**
+     * Recupera un singolo evento per identificatore univoco.
+     *
+     * @param id l'identificatore univoco dell'evento da recuperare
+     * @return l'oggetto {@link EventoDTO} corrispondente
+     * @throws IOException              se si verifica un errore I/O
+     * @throws IllegalArgumentException se l'id fornito è nullo
+     * @throws java.util.NoSuchElementException se l'evento con l'id specificato non viene trovato
+     */
     public EventoDTO trovaUno(Long id) throws IOException {
         if (id == null) {
             throw new IllegalArgumentException("Id non valido");
@@ -89,10 +133,22 @@ public class EventoService {
         return EventoDTO.fromEntityWithId(evento);
     }
 
+    /**
+     * Elimina un evento dal database tramite il suo identificatore univoco.
+     *
+     * @param id l'identificatore univoco dell'evento da eliminare
+     */
     public void elimina(Long id) {
         eventoRepository.deleteById(id);
     }
 
+    /**
+     * Aggiorna un evento esistente nel database con i dati forniti nel DTO.
+     *
+     * @param id  l'identificatore univoco dell'evento da aggiornare
+     * @param dto il DTO contenente i dati aggiornati
+     * @throws RuntimeException se l'evento con l'id specificato non esiste
+     */
     @Transactional
     public void aggiorna(Long id, EventoDTO dto) {
         Evento evento = eventoRepository.findById(id)
@@ -101,10 +157,21 @@ public class EventoService {
         dto.updateEntity(evento);
     }
 
+    /**
+     * Crea e salva un nuovo evento nel database.
+     *
+     * @param dto l'oggetto {@link EventoDTO} contenente i dettagli del nuovo evento
+     */
     public void nuovo(EventoDTO dto) {
         eventoRepository.save(dto.toEntity(dto));
     }
 
+    /**
+     * Cerca ed estrae gli eventi che soddisfano i criteri di filtro specificati nel DTO di ricerca.
+     *
+     * @param dto l'oggetto {@link EventoSearchDTO} contenente i parametri di ricerca (anno, titolo, categoria, civiltà)
+     * @return la lista di {@link EventoDTO} che corrispondono ai criteri indicati
+     */
     public List<EventoDTO> cerca(EventoSearchDTO dto) {
 
         Specification<Evento> specification = Specification.unrestricted();
