@@ -111,7 +111,7 @@ public class EventoService {
      * @return la lista di tutti gli eventi storici
      */
     public List<EventoResponse> trovaTutti() {
-        return eventoRepository.findAll().stream()
+        return eventoRepository.findAllByOrderByAnnoAsc().stream()
                 .map(EventoResponse::fromEntityWithId)
                 .toList();
     }
