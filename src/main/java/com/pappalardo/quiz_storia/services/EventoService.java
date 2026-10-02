@@ -1,7 +1,7 @@
 package com.pappalardo.quiz_storia.services;
 
-import com.pappalardo.quiz_storia.dto.EventoDTO;
-import com.pappalardo.quiz_storia.dto.EventoSearchDTO;
+import com.pappalardo.quiz_storia.dto.response.EventoResponse;
+import com.pappalardo.quiz_storia.dto.request.EventoRequest;
 import com.pappalardo.quiz_storia.entities.Evento;
 import com.pappalardo.quiz_storia.repositories.EventoRepository;
 import com.pappalardo.quiz_storia.repositories.EventoSpecification;
@@ -106,13 +106,13 @@ public class EventoService {
     }
 
     /**
-     * Recupera tutti gli eventi presenti nel database convertendoli in {@link EventoDTO}.
+     * Recupera tutti gli eventi presenti nel database convertendoli in {@link EventoResponse}.
      *
      * @return la lista di tutti gli eventi storici
      */
-    public List<EventoDTO> trovaTutti() {
+    public List<EventoResponse> trovaTutti() {
         return eventoRepository.findAll().stream()
-                .map(EventoDTO::fromEntityWithId)
+                .map(EventoResponse::fromEntityWithId)
                 .toList();
     }
 
@@ -120,17 +120,17 @@ public class EventoService {
      * Recupera un singolo evento per identificatore univoco.
      *
      * @param id l'identificatore univoco dell'evento da recuperare
-     * @return l'oggetto {@link EventoDTO} corrispondente
+     * @return l'oggetto {@link EventoResponse} corrispondente
      * @throws IOException              se si verifica un errore I/O
      * @throws IllegalArgumentException se l'id fornito è nullo
      * @throws java.util.NoSuchElementException se l'evento con l'id specificato non viene trovato
      */
-    public EventoDTO trovaUno(Long id) throws IOException {
+    public EventoResponse trovaUno(Long id) throws IOException {
         if (id == null) {
             throw new IllegalArgumentException("Id non valido");
         }
         Evento evento = eventoRepository.findById(id).orElseThrow();
-        return EventoDTO.fromEntityWithId(evento);
+        return EventoResponse.fromEntityWithId(evento);
     }
 
     /**
@@ -146,68 +146,68 @@ public class EventoService {
      * Aggiorna un evento esistente nel database con i dati forniti nel DTO.
      *
      * @param id  l'identificatore univoco dell'evento da aggiornare
-     * @param dto il DTO contenente i dati aggiornati
+     * @param eventoResponse il DTO contenente i dati aggiornati
      * @throws RuntimeException se l'evento con l'id specificato non esiste
      */
     @Transactional
-    public void aggiorna(Long id, EventoDTO dto) {
+    public void aggiorna(Long id, EventoResponse eventoResponse) {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento non trovato"));
 
-        dto.updateEntity(evento);
+        eventoResponse.updateEntity(evento);
     }
 
     /**
      * Crea e salva un nuovo evento nel database.
      *
-     * @param dto l'oggetto {@link EventoDTO} contenente i dettagli del nuovo evento
+     * @param eventoResponse l'oggetto {@link EventoResponse} contenente i dettagli del nuovo evento
      */
-    public void nuovo(EventoDTO dto) {
-        eventoRepository.save(dto.toEntity(dto));
+    public void nuovo(EventoResponse eventoResponse) {
+        eventoRepository.save(eventoResponse.toEntity(eventoResponse));
     }
 
     /**
      * Cerca ed estrae gli eventi che soddisfano i criteri di filtro specificati nel DTO di ricerca.
      *
-     * @param dto l'oggetto {@link EventoSearchDTO} contenente i parametri di ricerca (anno, titolo, categoria, civiltà)
-     * @return la lista di {@link EventoDTO} che corrispondono ai criteri indicati
+     * @param eventoRequest l'oggetto {@link EventoRequest} contenente i parametri di ricerca (anno, titolo, categoria, civiltà)
+     * @return la lista di {@link EventoResponse} che corrispondono ai criteri indicati
      */
-    public List<EventoDTO> cerca(EventoSearchDTO dto) {
+    public List<EventoResponse> cerca(EventoRequest eventoRequest) {
 
         Specification<Evento> specification = Specification.unrestricted();
 
-        if (dto.anno() != null) {
+        if (eventoRequest.anno() != null) {
             specification = specification.and(
-                    EventoSpecification.annoEquals(dto.anno())
+                    EventoSpecification.annoEquals(eventoRequest.anno())
             );
         }
 
-        if (dto.titolo() != null &&
-                !dto.titolo().isBlank()) {
+        if (eventoRequest.titolo() != null &&
+                !eventoRequest.titolo().isBlank()) {
 
             specification = specification.and(
-                    EventoSpecification.titoloContains(dto.titolo())
+                    EventoSpecification.titoloContains(eventoRequest.titolo())
             );
         }
 
-        if (dto.categoria() != null &&
-                !dto.categoria().isBlank()) {
+        if (eventoRequest.categoria() != null &&
+                !eventoRequest.categoria().isBlank()) {
 
             specification = specification.and(
-                    EventoSpecification.categoriaEquals(dto.categoria())
+                    EventoSpecification.categoriaEquals(eventoRequest.categoria())
             );
         }
 
-        if (dto.civilta() != null &&
-                !dto.civilta().isBlank()) {
+        if (eventoRequest.civilta() != null &&
+                !eventoRequest.civilta().isBlank()) {
 
             specification = specification.and(
-                    EventoSpecification.civiltaEquals(dto.civilta())
+                    EventoSpecification.civiltaEquals(eventoRequest.civilta())
             );
         }
 
         return eventoRepository.findAll(specification).stream()
-                .map(EventoDTO::fromEntityWithId)
+                .map(EventoResponse::fromEntityWithId)
                 .toList();
     }
 }

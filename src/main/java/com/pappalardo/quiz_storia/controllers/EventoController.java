@@ -1,7 +1,7 @@
 package com.pappalardo.quiz_storia.controllers;
 
-import com.pappalardo.quiz_storia.dto.EventoDTO;
-import com.pappalardo.quiz_storia.dto.EventoSearchDTO;
+import com.pappalardo.quiz_storia.dto.response.EventoResponse;
+import com.pappalardo.quiz_storia.dto.request.EventoRequest;
 import com.pappalardo.quiz_storia.services.EventoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +50,7 @@ public class EventoController {
             }
         }
 
-        List<EventoDTO> eventi = eventoService.trovaTutti();
+        List<EventoResponse> eventi = eventoService.trovaTutti();
         model.addAttribute("eventi", eventi);
 
         return "eventi/lista";
@@ -66,7 +66,7 @@ public class EventoController {
      */
     @GetMapping("/eventi/dettaglio/{id}")
     public String dettaglioEvento(@PathVariable Long id, Model model) throws IOException {
-        EventoDTO evento = eventoService.trovaUno(id);
+        EventoResponse evento = eventoService.trovaUno(id);
         model.addAttribute("evento", evento);
         return "eventi/dettaglio";
     }
@@ -81,7 +81,7 @@ public class EventoController {
      */
     @GetMapping("/eventi/modifica/{id}")
     public String modificaEvento(@PathVariable Long id, Model model) throws IOException {
-        EventoDTO evento = eventoService.trovaUno(id);
+        EventoResponse evento = eventoService.trovaUno(id);
         model.addAttribute("evento", evento);
         return "eventi/modifica";
     }
@@ -90,13 +90,13 @@ public class EventoController {
      * Gestisce la sottomissione del modulo di modifica di un evento storico.
      *
      * @param id     l'identificatore univoco dell'evento da modificare
-     * @param evento i dati aggiornati dell'evento
+     * @param eventoResponse i dati aggiornati dell'evento
      * @return il redirect alla pagina di dettaglio dell'evento modificato
      * @throws IOException se si verifica un errore durante l'aggiornamento
      */
     @PostMapping("/eventi/modifica/{id}")
-    public String aggiornaEvento(@PathVariable Long id, @ModelAttribute EventoDTO evento) throws IOException {
-        eventoService.aggiorna(id, evento);
+    public String aggiornaEvento(@PathVariable Long id, @ModelAttribute EventoResponse eventoResponse) throws IOException {
+        eventoService.aggiorna(id, eventoResponse);
         return "redirect:/eventi/dettaglio/" + id;
     }
 
@@ -130,7 +130,7 @@ public class EventoController {
      * @return il redirect alla lista degli eventi
      */
     @PostMapping("/eventi/nuovo")
-    public String salvaNuovoEvento(@ModelAttribute EventoDTO evento) {
+    public String salvaNuovoEvento(@ModelAttribute EventoResponse evento) {
         eventoService.nuovo(evento);
         return "redirect:/eventi/lista";
     }
@@ -148,13 +148,13 @@ public class EventoController {
     /**
      * Esegue la ricerca filtrata degli eventi in base ai parametri specificati e mostra i risultati.
      *
-     * @param eventoSearchDTO i criteri di filtro selezionati dall'utente
+     * @param eventoRequest i criteri di filtro selezionati dall'utente
      * @param model           il modello Spring MVC per il passaggio dei risultati alla vista
      * @return il nome del template con gli eventi filtrati ("eventi/eventiFiltrati")
      */
     @GetMapping("/eventi/eventiFiltrati")
-    public String mostraEvento(@ModelAttribute EventoSearchDTO eventoSearchDTO, Model model) {
-        List<EventoDTO> eventi = eventoService.cerca(eventoSearchDTO);
+    public String mostraEvento(@ModelAttribute EventoRequest eventoRequest, Model model) {
+        List<EventoResponse> eventi = eventoService.cerca(eventoRequest);
         model.addAttribute("eventi", eventi);
         return "eventi/eventiFiltrati";
     }

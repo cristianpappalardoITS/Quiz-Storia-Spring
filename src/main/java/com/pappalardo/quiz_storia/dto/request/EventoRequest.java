@@ -1,4 +1,4 @@
-package com.pappalardo.quiz_storia.dto;
+package com.pappalardo.quiz_storia.dto.request;
 
 /**
  * Data Transfer Object (DTO) per la ricerca e il filtraggio degli eventi storici.
@@ -8,6 +8,6 @@ package com.pappalardo.quiz_storia.dto;
  * @param civilta   la civiltà associata all'evento (opzionale)
  * @param categoria la categoria tematica dell'evento (opzionale)
  */
-public record EventoSearchDTO(Integer anno, String titolo, String civilta, String categoria) {
+public record EventoRequest(Integer anno, String titolo, String civilta, String categoria) {
 
 }

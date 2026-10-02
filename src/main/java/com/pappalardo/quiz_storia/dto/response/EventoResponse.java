@@ -1,4 +1,4 @@
-package com.pappalardo.quiz_storia.dto;
+package com.pappalardo.quiz_storia.dto.response;
 
 import com.pappalardo.quiz_storia.entities.Evento;
 
@@ -14,17 +14,17 @@ import com.pappalardo.quiz_storia.entities.Evento;
  * @param categoria   la categoria tematica dell'evento
  * @param descrizione la descrizione dettagliata dell'evento
  */
-public record EventoDTO(Long id, String epoca, int anno, String titolo, String luogo, String civilta, String categoria,
-                        String descrizione) {
+public record EventoResponse(Long id, String epoca, int anno, String titolo, String luogo, String civilta, String categoria,
+                             String descrizione) {
 
     /**
-     * Crea un {@link EventoDTO} a partire da un'entità {@link Evento}, escludendo l'id.
+     * Crea un {@link EventoResponse} a partire da un'entità {@link Evento}, escludendo l'id.
      *
      * @param evento l'entità {@link Evento} sorgente
-     * @return una nuova istanza di {@link EventoDTO} senza identificatore
+     * @return una nuova istanza di {@link EventoResponse} senza identificatore
      */
-    public static EventoDTO fromEntity(Evento evento) {
-        return new EventoDTO(
+    public static EventoResponse fromEntity(Evento evento) {
+        return new EventoResponse(
                 null,
                 null,
                 evento.getAnno(),
@@ -36,13 +36,13 @@ public record EventoDTO(Long id, String epoca, int anno, String titolo, String l
     }
 
     /**
-     * Crea un {@link EventoDTO} a partire da un'entità {@link Evento}, includendo l'id dell'entità.
+     * Crea un {@link EventoResponse} a partire da un'entità {@link Evento}, includendo l'id dell'entità.
      *
      * @param evento l'entità {@link Evento} sorgente
-     * @return una nuova istanza di {@link EventoDTO} con l'identificatore dell'entità
+     * @return una nuova istanza di {@link EventoResponse} con l'identificatore dell'entità
      */
-    public static EventoDTO fromEntityWithId(Evento evento) {
-        return new EventoDTO(
+    public static EventoResponse fromEntityWithId(Evento evento) {
+        return new EventoResponse(
                 evento.getId(),
                 null,
                 evento.getAnno(),
@@ -54,12 +54,12 @@ public record EventoDTO(Long id, String epoca, int anno, String titolo, String l
     }
 
     /**
-     * Converte un {@link EventoDTO} in una nuova entità {@link Evento}.
+     * Converte un {@link EventoResponse} in una nuova entità {@link Evento}.
      *
-     * @param dto l'oggetto {@link EventoDTO} da convertire
+     * @param dto l'oggetto {@link EventoResponse} da convertire
      * @return una nuova istanza di {@link Evento} popolata con i valori del DTO
      */
-    public Evento toEntity(EventoDTO dto) {
+    public Evento toEntity(EventoResponse dto) {
         return new Evento(dto.anno, dto.titolo, dto.luogo, dto.civilta, dto.categoria, dto.descrizione);
     }
 
